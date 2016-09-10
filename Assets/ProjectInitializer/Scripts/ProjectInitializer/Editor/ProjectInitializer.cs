@@ -10,53 +10,63 @@ public class ProjectInitializer  {
     public static void ProjectInitialize()
     {
         var appName = Application.productName;
-        var appRootPath = Application.dataPath;
+        var appAssetsRootPath = Application.dataPath;
+        var appRootPath = Directory.GetParent(appAssetsRootPath);
 
-        CheckAndCreate(ChainPath(appRootPath, "CGINC"));
-        CheckAndCreate(ChainPath(appRootPath, "Plugins"));
-        CheckAndCreate(ChainPath(appRootPath, "Externals"));
-        CheckAndCreate(ChainPath(appRootPath, "Models"));
-        CheckAndCreate(ChainPath(appRootPath, "Texture"));
 
-        var appNamespaceRootPath = ChainPath(appRootPath, appName);
-        CheckAndCreate(appNamespaceRootPath);
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Shaders"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Shaders", "Object"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Shaders", "2D"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Shaders", "UI"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Shaders", "Particle"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Shaders", "Effect"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Shaders", "Compute"));
+        CheckAndCreateDirectory(ChainPath(appAssetsRootPath, "CGINC"));
+        CheckAndCreateDirectory(ChainPath(appAssetsRootPath, "Plugins"));
+        CheckAndCreateDirectory(ChainPath(appAssetsRootPath, "Externals"));
+        CheckAndCreateDirectory(ChainPath(appAssetsRootPath, "Models"));
+        CheckAndCreateDirectory(ChainPath(appAssetsRootPath, "Texture"));
+        CheckAndCreateDirectory(ChainPath(appAssetsRootPath, "StreamingAssets"));
 
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Materials"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Materials", "Object"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Materials", "2D"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Materials", "UI"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Materials", "Particle"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Materials", "Effect"));
+        var appNamespaceRootPath = ChainPath(appAssetsRootPath, appName);
+        var fileDirectoryPath = ChainPath(appNamespaceRootPath, "File");
 
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Scripts"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Scripts", appName));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Scripts", appName, "Editor"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Scripts", appName, "Behavior"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Scripts", appName, "Library"));
+        CheckAndCopyFile(
+            fileDirectoryPath + "/" + "gitignore",
+            appRootPath       + "/" + ".gitignore"
+        );
 
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Scene"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Scene", "Test"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Scene", "Game"));
+        CheckAndCreateDirectory(appNamespaceRootPath);
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Shaders"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Shaders", "Object"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Shaders", "2D"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Shaders", "UI"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Shaders", "Particle"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Shaders", "Effect"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Shaders", "Compute"));
 
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Prefabs"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Prefabs", "Resources"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Prefabs", "Object"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Prefabs", "Particle"));
-        CheckAndCreate(ChainPath(appNamespaceRootPath, "Prefabs", "Etc"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Materials"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Materials", "Object"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Materials", "2D"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Materials", "UI"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Materials", "Particle"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Materials", "Effect"));
+
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Scripts"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Scripts", appName));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Scripts", appName, "Editor"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Scripts", appName, "Behavior"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Scripts", appName, "Library"));
+
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Scene"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Scene", "Test"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Scene", "Game"));
+
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Prefabs"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Prefabs", "Resources"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Prefabs", "Object"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Prefabs", "Particle"));
+        CheckAndCreateDirectory(ChainPath(appNamespaceRootPath, "Prefabs", "Etc"));
 
         AssetDatabase.Refresh();
 
         Debug.Log("Initialized");
     }
 
-    private static void CheckAndCreate(string path)
+    private static void CheckAndCreateDirectory(string path)
     {
         if(!Directory.Exists(path))
         {
@@ -64,6 +74,13 @@ public class ProjectInitializer  {
         }else
         {
             Debug.Log(path + " is exists.");
+        }
+    }
+    private static void CheckAndCopyFile(string srcPath, string destPath)
+    {
+        if (!File.Exists(destPath))
+        {
+            File.Copy(srcPath, destPath);
         }
     }
     private static string ChainPath(params string[] pathArray)
