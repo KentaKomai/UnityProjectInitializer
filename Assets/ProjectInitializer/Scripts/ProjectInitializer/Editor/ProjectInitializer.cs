@@ -22,7 +22,7 @@ public class ProjectInitializer  {
         CheckAndCreateDirectory(ChainPath(appAssetsRootPath, "StreamingAssets"));
 
         var appNamespaceRootPath = ChainPath(appAssetsRootPath, appName);
-        var fileDirectoryPath = ChainPath(appNamespaceRootPath, "File");
+        var fileDirectoryPath = ChainPath(appRootPath.ToString(), "File");
 
         CheckAndCopyFile(
             fileDirectoryPath + "/" + "gitignore",
